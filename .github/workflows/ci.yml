@@ -38,6 +38,17 @@ jobs:
       - name: Récupérer le code
         uses: actions/checkout@v4
 
-      - name: Construire l'image Docker
-        run: |
-          docker build -t demo-cicd-pytest:latest .
+      - name: Connexion à Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Construire et publier l'image Docker
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            yacine11329/taskapi:latest
+            yacine11329/taskapi:${{ github.sha }}
